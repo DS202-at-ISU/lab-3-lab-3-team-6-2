@@ -33,22 +33,44 @@ str(av)
 ## Death Mutate
 ``` {r}
 library(tidyverse)
-deaths <- av |> 
+deaths <- av %>%
   pivot_longer(
-    Death1:Death5,
+    cols = Death1:Death5,
     names_to = "Time",
     values_to = "Death"
-  ) |>
-  mutate(time = parse_number(Time), death = tolower(Death))
-head(deaths)
+  ) %>%
+  mutate(Time = parse_number(Time)) %>%
+  filter(Death != "")
+head(deaths, 10)
 str(deaths)
 ```
 
-Get the data into a format where the five columns for Death[1-5] are replaced by two columns: Time, and Death. Time should be a number between 1 and 5 (look into the function `parse_number`); Death is a categorical variables with values "yes", "no" and "". Call the resulting data set `deaths`. 
+## Returns Mutate
+``` {r}
+library(tidyverse)
 
-Similarly, deal with the returns of characters.
+returns <- av %>%
+  pivot_longer(
+    cols = Return1:Return5,
+    names_to = "Time",
+    values_to = "Return"
+  ) %>%
+  mutate(Time = parse_number(Time)) %>%
+  filter(Return != "")
 
-Based on these datasets calculate the average number of deaths an Avenger suffers. 
+head(returns)
+```
+
+## Average Deaths
+``` {r}
+total_avengers <- nrow(av)
+total_deaths <- deaths %>% 
+  filter(Death == "YES") %>% 
+  nrow()
+
+avg_deaths <- total_deaths / total_avengers
+print(avg_deaths)
+```
 
 ## Individually
 

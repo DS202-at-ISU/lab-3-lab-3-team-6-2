@@ -110,61 +110,97 @@ library(tidyverse)
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
-deaths <- av |> 
+deaths <- av %>%
   pivot_longer(
-    Death1:Death5,
+    cols = Death1:Death5,
     names_to = "Time",
     values_to = "Death"
-  ) |>
-  mutate(time = parse_number(Time), death = tolower(Death))
-head(deaths)
+  ) %>%
+  mutate(Time = parse_number(Time)) %>%
+  filter(Death != "")
+head(deaths, 10)
 ```
 
-    ## # A tibble: 6 × 16
-    ##   URL                 Name.Alias Appearances Current. Gender Probationary.Introl
-    ##   <chr>               <chr>            <int> <chr>    <chr>  <chr>              
-    ## 1 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 2 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 3 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 4 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 5 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## 6 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
-    ## # ℹ 10 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
+    ## # A tibble: 10 × 14
+    ##    URL                Name.Alias Appearances Current. Gender Probationary.Introl
+    ##    <chr>              <chr>            <int> <chr>    <chr>  <chr>              
+    ##  1 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  2 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  3 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  4 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  5 http://marvel.wik… "Anthony …        3068 YES      MALE   ""                 
+    ##  6 http://marvel.wik… "Anthony …        3068 YES      MALE   ""                 
+    ##  7 http://marvel.wik… "Robert B…        2089 YES      MALE   ""                 
+    ##  8 http://marvel.wik… "Robert B…        2089 YES      MALE   ""                 
+    ##  9 http://marvel.wik… "Thor Odi…        2402 YES      MALE   ""                 
+    ## 10 http://marvel.wik… "Thor Odi…        2402 YES      MALE   ""                 
+    ## # ℹ 8 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
     ## #   Years.since.joining <int>, Honorary <chr>, Return5 <chr>, Notes <chr>,
-    ## #   Time <chr>, Death <chr>, time <dbl>, death <chr>
+    ## #   Time <dbl>, Death <chr>
 
 ``` r
 str(deaths)
 ```
 
-    ## tibble [1,557 × 16] (S3: tbl_df/tbl/data.frame)
-    ##  $ URL                        : chr [1:1557] "http://marvel.wikia.com/Henry_Pym_(Earth-616)" "http://marvel.wikia.com/Henry_Pym_(Earth-616)" "http://marvel.wikia.com/Henry_Pym_(Earth-616)" "http://marvel.wikia.com/Henry_Pym_(Earth-616)" ...
-    ##  $ Name.Alias                 : chr [1:1557] "Henry Jonathan \"Hank\" Pym" "Henry Jonathan \"Hank\" Pym" "Henry Jonathan \"Hank\" Pym" "Henry Jonathan \"Hank\" Pym" ...
-    ##  $ Appearances                : int [1:1557] 1269 1269 1269 1269 1269 1269 1269 1269 1269 1165 ...
-    ##  $ Current.                   : chr [1:1557] "YES" "YES" "YES" "YES" ...
-    ##  $ Gender                     : chr [1:1557] "MALE" "MALE" "MALE" "MALE" ...
-    ##  $ Probationary.Introl        : chr [1:1557] "" "" "" "" ...
-    ##  $ Full.Reserve.Avengers.Intro: chr [1:1557] "Sep-63" "Sep-63" "Sep-63" "Sep-63" ...
-    ##  $ Year                       : int [1:1557] 1963 1963 1963 1963 1963 1963 1963 1963 1963 1963 ...
-    ##  $ Years.since.joining        : int [1:1557] 52 52 52 52 52 52 52 52 52 52 ...
-    ##  $ Honorary                   : chr [1:1557] "Full" "Full" "Full" "Full" ...
-    ##  $ Return5                    : chr [1:1557] "" "" "" "" ...
-    ##  $ Notes                      : chr [1:1557] "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " ...
-    ##  $ Time                       : chr [1:1557] "Death1" "Return1" "Death2" "Return2" ...
-    ##  $ Death                      : chr [1:1557] "YES" "NO" "" "" ...
-    ##  $ time                       : num [1:1557] 1 1 2 2 3 3 4 4 5 1 ...
-    ##  $ death                      : chr [1:1557] "yes" "no" "" "" ...
+    ## tibble [282 × 14] (S3: tbl_df/tbl/data.frame)
+    ##  $ URL                        : chr [1:282] "http://marvel.wikia.com/Henry_Pym_(Earth-616)" "http://marvel.wikia.com/Henry_Pym_(Earth-616)" "http://marvel.wikia.com/Janet_van_Dyne_(Earth-616)" "http://marvel.wikia.com/Janet_van_Dyne_(Earth-616)" ...
+    ##  $ Name.Alias                 : chr [1:282] "Henry Jonathan \"Hank\" Pym" "Henry Jonathan \"Hank\" Pym" "Janet van Dyne" "Janet van Dyne" ...
+    ##  $ Appearances                : int [1:282] 1269 1269 1165 1165 3068 3068 2089 2089 2402 2402 ...
+    ##  $ Current.                   : chr [1:282] "YES" "YES" "YES" "YES" ...
+    ##  $ Gender                     : chr [1:282] "MALE" "MALE" "FEMALE" "FEMALE" ...
+    ##  $ Probationary.Introl        : chr [1:282] "" "" "" "" ...
+    ##  $ Full.Reserve.Avengers.Intro: chr [1:282] "Sep-63" "Sep-63" "Sep-63" "Sep-63" ...
+    ##  $ Year                       : int [1:282] 1963 1963 1963 1963 1963 1963 1963 1963 1963 1963 ...
+    ##  $ Years.since.joining        : int [1:282] 52 52 52 52 52 52 52 52 52 52 ...
+    ##  $ Honorary                   : chr [1:282] "Full" "Full" "Full" "Full" ...
+    ##  $ Return5                    : chr [1:282] "" "" "" "" ...
+    ##  $ Notes                      : chr [1:282] "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " "Merged with Ultron in Rage of Ultron Vol. 1. A funeral was held. " "Dies in Secret Invasion V1:I8. Actually was sent tto Microverse later recovered" "Dies in Secret Invasion V1:I8. Actually was sent tto Microverse later recovered" ...
+    ##  $ Time                       : num [1:282] 1 1 1 1 1 1 1 1 1 1 ...
+    ##  $ Death                      : chr [1:282] "YES" "NO" "YES" "YES" ...
 
-Get the data into a format where the five columns for Death\[1-5\] are
-replaced by two columns: Time, and Death. Time should be a number
-between 1 and 5 (look into the function `parse_number`); Death is a
-categorical variables with values “yes”, “no” and ““. Call the resulting
-data set `deaths`.
+## Returns Mutate
 
-Similarly, deal with the returns of characters.
+``` r
+library(tidyverse)
 
-Based on these datasets calculate the average number of deaths an
-Avenger suffers.
+returns <- av %>%
+  pivot_longer(
+    cols = Return1:Return5,
+    names_to = "Time",
+    values_to = "Return"
+  ) %>%
+  mutate(Time = parse_number(Time)) %>%
+  filter(Return != "")
+
+head(returns)
+```
+
+    ## # A tibble: 6 × 14
+    ##   URL                 Name.Alias Appearances Current. Gender Probationary.Introl
+    ##   <chr>               <chr>            <int> <chr>    <chr>  <chr>              
+    ## 1 http://marvel.wiki… "Henry Jo…        1269 YES      MALE   ""                 
+    ## 2 http://marvel.wiki… "Janet va…        1165 YES      FEMALE ""                 
+    ## 3 http://marvel.wiki… "Anthony …        3068 YES      MALE   ""                 
+    ## 4 http://marvel.wiki… "Robert B…        2089 YES      MALE   ""                 
+    ## 5 http://marvel.wiki… "Thor Odi…        2402 YES      MALE   ""                 
+    ## 6 http://marvel.wiki… "Thor Odi…        2402 YES      MALE   ""                 
+    ## # ℹ 8 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
+    ## #   Years.since.joining <int>, Honorary <chr>, Death1 <chr>, Notes <chr>,
+    ## #   Time <dbl>, Return <chr>
+
+## Average Deaths
+
+``` r
+total_avengers <- nrow(av)
+total_deaths <- deaths %>% 
+  filter(Death == "YES") %>% 
+  nrow()
+
+avg_deaths <- total_deaths / total_avengers
+print(avg_deaths)
+```
+
+    ## [1] 0.8381503
 
 ## Individually
 
