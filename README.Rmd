@@ -4,19 +4,17 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit the README.Rmd file -->
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Lab report #3 - instructions
 
-Follow the instructions posted at https://ds202-at-isu.github.io/labs.html for the lab assignment. The work is meant to be finished during the lab time, but you have time until Monday evening to polish things.
+Follow the instructions posted at <https://ds202-at-isu.github.io/labs.html> for the lab assignment. The work is meant to be finished during the lab time, but you have time until Monday evening to polish things.
 
-Include your answers in this document (Rmd file). Make sure that it knits properly (into the md file). Upload both the Rmd and the md file to your repository.  
+Include your answers in this document (Rmd file). Make sure that it knits properly (into the md file). Upload both the Rmd and the md file to your repository.
 
-All submissions to the github repo will be automatically uploaded for grading once the due date is passed.
-Submit a link to your repository on Canvas (only one submission per team) to signal to the instructors that you are done with your submission.
+All submissions to the github repo will be automatically uploaded for grading once the due date is passed. Submit a link to your repository on Canvas (only one submission per team) to signal to the instructors that you are done with your submission.
 
 # Lab 3: Avenger's Peril
 
@@ -31,7 +29,8 @@ str(av)
 ```
 
 ## Death Mutate
-``` {r}
+
+```{r}
 library(tidyverse)
 deaths <- av %>%
   pivot_longer(
@@ -46,7 +45,8 @@ str(deaths)
 ```
 
 ## Returns Mutate
-``` {r}
+
+```{r}
 library(tidyverse)
 
 returns <- av %>%
@@ -62,7 +62,8 @@ head(returns)
 ```
 
 ## Average Deaths
-``` {r}
+
+```{r}
 total_avengers <- nrow(av)
 total_deaths <- deaths %>% 
   filter(Death == "YES") %>% 
@@ -74,20 +75,32 @@ print(avg_deaths)
 
 ## Individually
 
-For each team member, copy this part of the report. 
+### Harrison Voss
 
-Each team member picks one of the statements in the FiveThirtyEight [analysis](https://fivethirtyeight.com/features/avengers-death-comics-age-of-ultron/) and fact checks it based on the data. Use dplyr functionality whenever possible.
+#### FiveThirtyEight statement
 
-### FiveThirtyEight Statement
+> Out of 173 listed Avengers, my analysis found that 69 had died at least one time after they joined the team.5 That’s about 40 percent of all people who have ever signed on to the team.
 
-> Quote the statement you are planning to fact-check.
+#### Code
 
-### Include the code
+```{r}
+total_avengers <- nrow(av)
 
-Make sure to include the code to derive the (numeric) fact for the statement
+avengers_who_died <- deaths |>
+  filter(Death == "YES") |>
+  distinct(Name.Alias) |>
+  nrow()
 
-### Include your answer
 
-Include at least one sentence discussing the result of your fact-checking endeavor.
+print(avengers_who_died)
 
-Upload your changes to the repository. Discuss and refine answers as a team.
+percent_died <- avengers_who_died / total_avengers
+
+print(percent_died* 100)
+```
+
+#### Answer
+
+It seems that the number of people who died was 64, not 69, and that the percentage is 37% not 40%.
+
+This is not a very big discrepancy, but my findings do differ from the claim in the analysis.

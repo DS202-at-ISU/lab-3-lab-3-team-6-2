@@ -204,26 +204,42 @@ print(avg_deaths)
 
 ## Individually
 
-For each team member, copy this part of the report.
+### Harrison Voss
 
-Each team member picks one of the statements in the FiveThirtyEight
-[analysis](https://fivethirtyeight.com/features/avengers-death-comics-age-of-ultron/)
-and fact checks it based on the data. Use dplyr functionality whenever
-possible.
+#### FiveThirtyEight statement
 
-### FiveThirtyEight Statement
+> Out of 173 listed Avengers, my analysis found that 69 had died at
+> least one time after they joined the team.5 That’s about 40 percent of
+> all people who have ever signed on to the team.
 
-> Quote the statement you are planning to fact-check.
+#### Code
 
-### Include the code
+``` r
+total_avengers <- nrow(av)
 
-Make sure to include the code to derive the (numeric) fact for the
-statement
+avengers_who_died <- deaths |>
+  filter(Death == "YES") |>
+  distinct(Name.Alias) |>
+  nrow()
 
-### Include your answer
 
-Include at least one sentence discussing the result of your
-fact-checking endeavor.
+print(avengers_who_died)
+```
 
-Upload your changes to the repository. Discuss and refine answers as a
-team.
+    ## [1] 64
+
+``` r
+percent_died <- avengers_who_died / total_avengers
+
+print(percent_died* 100)
+```
+
+    ## [1] 36.99422
+
+#### Answer
+
+It seems that the number of people who died was 64, not 69, and that the
+percentage is 37% not 40%.
+
+This is not a very big discrepancy, but my findings do differ from the
+claim in the analysis.
