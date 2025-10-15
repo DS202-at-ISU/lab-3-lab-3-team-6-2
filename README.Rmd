@@ -27,6 +27,21 @@ Extract from the data below two data sets in long form `deaths` and `returns`
 ```{r}
 av <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
 head(av)
+str(av)
+```
+
+## Death Mutate
+``` {r}
+library(tidyverse)
+deaths <- av |> 
+  pivot_longer(
+    Death1:Death5,
+    names_to = "Time",
+    values_to = "Death"
+  ) |>
+  mutate(time = parse_number(Time), death = tolower(Death))
+head(deaths)
+str(deaths)
 ```
 
 Get the data into a format where the five columns for Death[1-5] are replaced by two columns: Time, and Death. Time should be a number between 1 and 5 (look into the function `parse_number`); Death is a categorical variables with values "yes", "no" and "". Call the resulting data set `deaths`. 
