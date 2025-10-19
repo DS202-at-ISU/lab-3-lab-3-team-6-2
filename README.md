@@ -100,8 +100,8 @@ library(tidyverse)
 
     ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
     ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+    ## ✔ forcats   1.0.1     ✔ stringr   1.5.2
+    ## ✔ ggplot2   4.0.0     ✔ tibble    3.3.0
     ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
     ## ✔ purrr     1.1.0     
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -243,3 +243,62 @@ percentage is 37% not 40%.
 
 This is not a very big discrepancy, but my findings do differ from the
 claim in the analysis.
+
+### Nhu Phan
+
+#### Claim to check
+
+> Of the nine Avengers we see on screen — Iron Man, Hulk, Captain
+> America, Thor, Hawkeye, Black Widow, Scarlet Witch, Quicksilver and
+> The Vision — every single one of them has died at least once in the
+> course of their time Avenging in the comics. In fact, Hawkeye died
+> twice!
+
+``` r
+library(tidyverse)
+
+# Define the nine MCU Avengers mentioned in the article
+mcu_avengers <- c(
+  "Anthony Edward \"Tony\" Stark",   # Iron Man
+  "Robert Bruce Banner",            # Hulk
+  "Steven Rogers",                  # Captain America
+  "Thor Odinson",                   # Thor
+  "Clinton Francis Barton",                   # Hawkeye
+  "Natalia Alianovna Romanova", # Black Widow
+  "Wanda Maximoff",                 # Scarlet Witch
+  "Pietro Maximoff",                # Quicksilver
+  "Victor Shade (alias)"                          # Vision
+)
+
+mcu_deaths <- deaths %>%
+  filter(Name.Alias %in% mcu_avengers & Death == "YES") %>%
+  count(Name.Alias, name = "Times_Died") %>%
+  arrange(desc(Times_Died))
+
+mcu_deaths
+```
+
+    ## # A tibble: 9 × 2
+    ##   Name.Alias                      Times_Died
+    ##   <chr>                                <int>
+    ## 1 "Clinton Francis Barton"                 4
+    ## 2 "Thor Odinson"                           3
+    ## 3 "Anthony Edward \"Tony\" Stark"          2
+    ## 4 "Natalia Alianovna Romanova"             2
+    ## 5 "Pietro Maximoff"                        2
+    ## 6 "Robert Bruce Banner"                    2
+    ## 7 "Steven Rogers"                          2
+    ## 8 "Victor Shade (alias)"                   2
+    ## 9 "Wanda Maximoff"                         2
+
+#### Conclusion
+
+Based on the data, every one of the nine MCU Avengers has died at least
+once in the comics, confirming the main claim from the article. However,
+the statement that only Hawkeye died twice is inaccurate. The dataset
+shows that several Avengers — including Iron Man, Black Widow, Hulk,
+Captain America, Vision, and others — have died more than once. Hawkeye
+does have the highest number of deaths (four), but he is not the only
+Avenger to experience multiple deaths. Therefore, while the overall idea
+that the Avengers frequently die and return is true, the specific detail
+about Hawkeye being unique in this regard is not supported by the data.
