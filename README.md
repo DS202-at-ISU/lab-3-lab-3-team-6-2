@@ -100,8 +100,8 @@ library(tidyverse)
 
     ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
     ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-    ## ✔ forcats   1.0.1     ✔ stringr   1.5.2
-    ## ✔ ggplot2   4.0.0     ✔ tibble    3.3.0
+    ## ✔ forcats   1.0.1     ✔ stringr   1.5.1
+    ## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
     ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
     ## ✔ purrr     1.1.0     
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -302,3 +302,293 @@ does have the highest number of deaths (four), but he is not the only
 Avenger to experience multiple deaths. Therefore, while the overall idea
 that the Avengers frequently die and return is true, the specific detail
 about Hawkeye being unique in this regard is not supported by the data.
+
+### Mahathi Reddy
+
+> But you can only tempt death so many times. There’s a 2-in-3 chance
+> that a member of the Avengers returned from their first stint in the
+> afterlife, but only a 50 percent chance they recovered from a second
+> or third death.
+
+``` r
+library(dplyr)
+
+# Load the data
+av <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv", stringsAsFactors = FALSE)
+
+# Check the structure of death and return columns
+av %>%
+  select(URL, Death1, Return1, Death2, Return2, Death3, Return3, Death4, Return4, Death5, Return5) %>%
+  head(10)
+```
+
+    ##                                                        URL Death1 Return1
+    ## 1            http://marvel.wikia.com/Henry_Pym_(Earth-616)    YES      NO
+    ## 2       http://marvel.wikia.com/Janet_van_Dyne_(Earth-616)    YES     YES
+    ## 3        http://marvel.wikia.com/Anthony_Stark_(Earth-616)    YES     YES
+    ## 4  http://marvel.wikia.com/Robert_Bruce_Banner_(Earth-616)    YES     YES
+    ## 5         http://marvel.wikia.com/Thor_Odinson_(Earth-616)    YES     YES
+    ## 6        http://marvel.wikia.com/Richard_Jones_(Earth-616)     NO        
+    ## 7        http://marvel.wikia.com/Steven_Rogers_(Earth-616)    YES     YES
+    ## 8         http://marvel.wikia.com/Clint_Barton_(Earth-616)    YES     YES
+    ## 9      http://marvel.wikia.com/Pietro_Maximoff_(Earth-616)    YES     YES
+    ## 10      http://marvel.wikia.com/Wanda_Maximoff_(Earth-616)    YES     YES
+    ##    Death2 Return2 Death3 Return3 Death4 Return4 Death5 Return5
+    ## 1                                                             
+    ## 2                                                             
+    ## 3                                                             
+    ## 4                                                             
+    ## 5     YES      NO                                             
+    ## 6                                                             
+    ## 7                                                             
+    ## 8     YES     YES                                             
+    ## 9                                                             
+    ## 10
+
+``` r
+# Fact-check: Return rate from FIRST death
+first_death_return <- av %>%
+  filter(Death1 == "YES") %>%  # Only those who died at least once
+  summarise(
+    total_first_deaths = n(),
+    returned_from_first = sum(Return1 == "YES", na.rm = TRUE),
+    return_rate_first = mean(Return1 == "YES", na.rm = TRUE),
+    return_percentage_first = mean(Return1 == "YES", na.rm = TRUE) * 100
+  )
+
+cat("FIRST DEATH:\n")
+```
+
+    ## FIRST DEATH:
+
+``` r
+print(first_death_return)
+```
+
+    ##   total_first_deaths returned_from_first return_rate_first
+    ## 1                 69                  46         0.6666667
+    ##   return_percentage_first
+    ## 1                66.66667
+
+``` r
+cat("\nReturn rate:", round(first_death_return$return_rate_first, 3), 
+    "(or", round(first_death_return$return_percentage_first, 1), "%)\n")
+```
+
+    ## 
+    ## Return rate: 0.667 (or 66.7 %)
+
+``` r
+cat("This is approximately", round(first_death_return$return_rate_first * 3, 1), 
+    "in 3, or", round(first_death_return$return_rate_first, 2), "\n\n")
+```
+
+    ## This is approximately 2 in 3, or 0.67
+
+``` r
+# Fact-check: Return rate from SECOND death
+second_death_return <- av %>%
+  filter(Death2 == "YES") %>%  # Only those who died a second time
+  summarise(
+    total_second_deaths = n(),
+    returned_from_second = sum(Return2 == "YES", na.rm = TRUE),
+    return_rate_second = mean(Return2 == "YES", na.rm = TRUE),
+    return_percentage_second = mean(Return2 == "YES", na.rm = TRUE) * 100
+  )
+
+cat("SECOND DEATH:\n")
+```
+
+    ## SECOND DEATH:
+
+``` r
+print(second_death_return)
+```
+
+    ##   total_second_deaths returned_from_second return_rate_second
+    ## 1                  16                    8                0.5
+    ##   return_percentage_second
+    ## 1                       50
+
+``` r
+cat("\nReturn rate:", round(second_death_return$return_rate_second, 3), 
+    "(or", round(second_death_return$return_percentage_second, 1), "%)\n\n")
+```
+
+    ## 
+    ## Return rate: 0.5 (or 50 %)
+
+``` r
+# Fact-check: Return rate from THIRD death
+third_death_return <- av %>%
+  filter(Death3 == "YES") %>%  # Only those who died a third time
+  summarise(
+    total_third_deaths = n(),
+    returned_from_third = sum(Return3 == "YES", na.rm = TRUE),
+    return_rate_third = mean(Return3 == "YES", na.rm = TRUE),
+    return_percentage_third = mean(Return3 == "YES", na.rm = TRUE) * 100
+  )
+
+cat("THIRD DEATH:\n")
+```
+
+    ## THIRD DEATH:
+
+``` r
+print(third_death_return)
+```
+
+    ##   total_third_deaths returned_from_third return_rate_third
+    ## 1                  2                   1               0.5
+    ##   return_percentage_third
+    ## 1                      50
+
+``` r
+cat("\nReturn rate:", round(third_death_return$return_rate_third, 3), 
+    "(or", round(third_death_return$return_percentage_third, 1), "%)\n\n")
+```
+
+    ## 
+    ## Return rate: 0.5 (or 50 %)
+
+``` r
+# Combined second and third death return rate
+second_and_third_combined <- av %>%
+  filter(Death2 == "YES" | Death3 == "YES") %>%
+  mutate(
+    died_second_or_third = (Death2 == "YES") + (Death3 == "YES"),
+    returned_second_or_third = (Return2 == "YES") + (Return3 == "YES")
+  ) %>%
+  summarise(
+    total_deaths_2_or_3 = sum(died_second_or_third, na.rm = TRUE),
+    total_returns_2_or_3 = sum(returned_second_or_third, na.rm = TRUE),
+    combined_return_rate = total_returns_2_or_3 / total_deaths_2_or_3,
+    combined_return_percentage = (total_returns_2_or_3 / total_deaths_2_or_3) * 100
+  )
+
+cat("SECOND OR THIRD DEATH COMBINED:\n")
+```
+
+    ## SECOND OR THIRD DEATH COMBINED:
+
+``` r
+print(second_and_third_combined)
+```
+
+    ##   total_deaths_2_or_3 total_returns_2_or_3 combined_return_rate
+    ## 1                  18                    9                  0.5
+    ##   combined_return_percentage
+    ## 1                         50
+
+``` r
+cat("\nCombined return rate:", round(second_and_third_combined$combined_return_rate, 3), 
+    "(or", round(second_and_third_combined$combined_return_percentage, 1), "%)\n\n")
+```
+
+    ## 
+    ## Combined return rate: 0.5 (or 50 %)
+
+``` r
+# Summary comparison table
+summary_table <- tibble(
+  Death_Number = c("First Death", "Second Death", "Third Death", "Second or Third Combined"),
+  Total_Deaths = c(first_death_return$total_first_deaths,
+                   second_death_return$total_second_deaths,
+                   third_death_return$total_third_deaths,
+                   second_and_third_combined$total_deaths_2_or_3),
+  Returns = c(first_death_return$returned_from_first,
+              second_death_return$returned_from_second,
+              third_death_return$returned_from_third,
+              second_and_third_combined$total_returns_2_or_3),
+  Return_Rate = c(first_death_return$return_rate_first,
+                  second_death_return$return_rate_second,
+                  third_death_return$return_rate_third,
+                  second_and_third_combined$combined_return_rate),
+  Return_Percentage = c(first_death_return$return_percentage_first,
+                        second_death_return$return_percentage_second,
+                        third_death_return$return_percentage_third,
+                        second_and_third_combined$combined_return_percentage)
+)
+
+cat("SUMMARY TABLE:\n")
+```
+
+    ## SUMMARY TABLE:
+
+``` r
+print(summary_table)
+```
+
+    ## # A tibble: 4 × 5
+    ##   Death_Number             Total_Deaths Returns Return_Rate Return_Percentage
+    ##   <chr>                           <int>   <int>       <dbl>             <dbl>
+    ## 1 First Death                        69      46       0.667              66.7
+    ## 2 Second Death                       16       8       0.5                50  
+    ## 3 Third Death                         2       1       0.5                50  
+    ## 4 Second or Third Combined           18       9       0.5                50
+
+``` r
+# Verify the "2-in-3" claim (which is approximately 0.667 or 66.7%)
+cat("\n=== VERIFICATION ===\n")
+```
+
+    ## 
+    ## === VERIFICATION ===
+
+``` r
+cat("Claim: 2-in-3 chance (66.7%) of return from first death\n")
+```
+
+    ## Claim: 2-in-3 chance (66.7%) of return from first death
+
+``` r
+cat("Actual:", round(first_death_return$return_percentage_first, 1), "%\n")
+```
+
+    ## Actual: 66.7 %
+
+``` r
+cat("Difference:", round(first_death_return$return_percentage_first - 66.7, 1), "percentage points\n\n")
+```
+
+    ## Difference: 0 percentage points
+
+``` r
+cat("Claim: 50% chance of return from second or third death\n")
+```
+
+    ## Claim: 50% chance of return from second or third death
+
+``` r
+cat("Actual:", round(second_and_third_combined$combined_return_percentage, 1), "%\n")
+```
+
+    ## Actual: 50 %
+
+``` r
+cat
+```
+
+    ## function (..., file = "", sep = " ", fill = FALSE, labels = NULL, 
+    ##     append = FALSE) 
+    ## {
+    ##     if (is.character(file)) 
+    ##         if (file == "") 
+    ##             file <- stdout()
+    ##         else if (startsWith(file, "|")) {
+    ##             file <- pipe(substring(file, 2L), "w")
+    ##             on.exit(close(file))
+    ##         }
+    ##         else {
+    ##             file <- file(file, ifelse(append, "a", "w"))
+    ##             on.exit(close(file))
+    ##         }
+    ##     .Internal(cat(list(...), file, sep, fill, labels, append))
+    ## }
+    ## <bytecode: 0x14514b1c8>
+    ## <environment: namespace:base>
+
+There is no difference between the claim and the returned value. This
+means that there is a 2 in 3 chance that a member of the Avengers
+returned from their first stint in the afterlife, but only a 50 percent
+chance they recovered from a second or third death.
